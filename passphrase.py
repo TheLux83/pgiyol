@@ -4,21 +4,21 @@ import random
 
 
 def passphrase_generator(argv):
-    with open('german.txt') as passphrases:
+    # open the correct language
+    language_file = 'languages/{}.txt'.format(argv.language)
+    with open(language_file) as passphrases:
         inputs = passphrases.readlines()  # load the language file into a list
         # get random values from that list
         passphrase = random.sample(inputs, argv.count)
         # strip the list from any \n characters
         passphrase = [i.replace('\n', '') for i in passphrase]
+        # should the output be case sensitive or insensitive?
         if argv.case_sensitive:
             passphrase = [word.capitalize() for word in passphrase]
         elif argv.case_insensitive:
             passphrase = [word.lower() for word in passphrase]
-        # convert the list to a string
+        # convert the list to a string and add a delimiter.
         passphrase = argv.delimiter.join(passphrase)
-
-        if argv.delimiter:
-            print('Delimiter activated')
         print(passphrase)
 
 
@@ -35,7 +35,7 @@ if __name__ == "__main__":
                             help="Kleinschreibung aller Wörter aktivieren")
     parser.add_argument("-n", "--numbers", action="store_true",
                         help="Füge Nummern im Passphrase hinzu")
-    parser.add_argument("-l", "--language", action="store_true",
+    parser.add_argument("-l", "--language", action="store_true", default="de",
                         help="Sprache des Passphrases (Standard: Deutsch)")
     args = parser.parse_args()
     passphrase_generator(args)
